@@ -5,9 +5,10 @@ export const defaultStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FDFFFF',
+    paddingTop: 30,
   },
   header: {
-    fontSize: 40,
+    fontSize: 28,
     fontWeight: '700',
   },
   
@@ -18,6 +19,7 @@ export const defaultStyles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     backgroundColor: '#fff',
+    marginBottom: 10,
   },
   pillButton: {
     padding: 10,

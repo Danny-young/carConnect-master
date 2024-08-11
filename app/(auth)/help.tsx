@@ -51,7 +51,17 @@ const Page = () => {
   return (
   <View>
     <Text>Help</Text>
-    
+    {/* async function signInWithEmail() {
+    setLoading(true)
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    })
+
+    if (error) Alert.alert(error.message)
+    setLoading(false)
+  }
+     */}
 </View>
 );
 };

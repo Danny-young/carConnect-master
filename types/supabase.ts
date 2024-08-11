@@ -64,19 +64,19 @@ export type Database = {
         Row: {
           created_at: string
           id: number
-          Name: Database["public"]["Enums"]["user_type"] | null
+          Name: string | null
           service_types: Database["public"]["Enums"]["service_types"] | null
         }
         Insert: {
           created_at?: string
           id?: number
-          Name?: Database["public"]["Enums"]["user_type"] | null
+          Name?: string | null
           service_types?: Database["public"]["Enums"]["service_types"] | null
         }
         Update: {
           created_at?: string
           id?: number
-          Name?: Database["public"]["Enums"]["user_type"] | null
+          Name?: string | null
           service_types?: Database["public"]["Enums"]["service_types"] | null
         }
         Relationships: []
@@ -85,30 +85,30 @@ export type Database = {
         Row: {
           address: string | null
           company_name: string | null
+          coordinates: Json | null
           created_at: string
           description: string | null
           id: number
-          location: Json | null
           Provider_ID: string | null
           Telephone: string | null
         }
         Insert: {
           address?: string | null
           company_name?: string | null
+          coordinates?: Json | null
           created_at?: string
           description?: string | null
           id?: number
-          location?: Json | null
           Provider_ID?: string | null
           Telephone?: string | null
         }
         Update: {
           address?: string | null
           company_name?: string | null
+          coordinates?: Json | null
           created_at?: string
           description?: string | null
           id?: number
-          location?: Json | null
           Provider_ID?: string | null
           Telephone?: string | null
         }
@@ -130,6 +130,7 @@ export type Database = {
           duration: number | null
           end_date: string | null
           id: number
+          name: string | null
           price: number | null
           provider_id: string | null
           quantity: number | null
@@ -142,6 +143,7 @@ export type Database = {
           duration?: number | null
           end_date?: string | null
           id?: number
+          name?: string | null
           price?: number | null
           provider_id?: string | null
           quantity?: number | null
@@ -154,19 +156,13 @@ export type Database = {
           duration?: number | null
           end_date?: string | null
           id?: number
+          name?: string | null
           price?: number | null
           provider_id?: string | null
           quantity?: number | null
           start_date?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "Services_category_fkey"
-            columns: ["category"]
-            isOneToOne: false
-            referencedRelation: "service_categories"
-            referencedColumns: ["Name"]
-          },
           {
             foreignKeyName: "Services_provider_id_fkey"
             columns: ["provider_id"]
@@ -205,23 +201,49 @@ export type Database = {
           },
         ]
       }
-      User_Roles: {
+      User_Business: {
         Row: {
+          address: string | null
+          business_name: string | null
+          coordinates: Json
           created_at: string
+          description: string | null
           id: number
-          Role: string | null
+          owner: string | null
+          provider_email: string | null
+          telephone: string | null
         }
         Insert: {
+          address?: string | null
+          business_name?: string | null
+          coordinates: Json
           created_at?: string
+          description?: string | null
           id?: number
-          Role?: string | null
+          owner?: string | null
+          provider_email?: string | null
+          telephone?: string | null
         }
         Update: {
+          address?: string | null
+          business_name?: string | null
+          coordinates?: Json
           created_at?: string
+          description?: string | null
           id?: number
-          Role?: string | null
+          owner?: string | null
+          provider_email?: string | null
+          telephone?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "User_Business_owner_fkey"
+            columns: ["owner"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       users: {
         Row: {
@@ -232,7 +254,8 @@ export type Database = {
           name: string | null
           password: string | null
           phone_number: string | null
-          user_type: Database["public"]["Enums"]["user_type"] | null
+          profileImage: string | null
+          user_type: string | null
         }
         Insert: {
           address?: string | null
@@ -242,7 +265,8 @@ export type Database = {
           name?: string | null
           password?: string | null
           phone_number?: string | null
-          user_type?: Database["public"]["Enums"]["user_type"] | null
+          profileImage?: string | null
+          user_type?: string | null
         }
         Update: {
           address?: string | null
@@ -252,50 +276,43 @@ export type Database = {
           name?: string | null
           password?: string | null
           phone_number?: string | null
-          user_type?: Database["public"]["Enums"]["user_type"] | null
+          profileImage?: string | null
+          user_type?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "users_id_fkey1"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       vehicles: {
         Row: {
+          color: string | null
           created_at: string
           id: number
           image_url: string | null
-          Licence_Plate: string | null
+          licence_plate: string | null
           model: string | null
-          Name: string | null
+          name: string | null
           owner: string | null
-          VIN: string | null
           year: string | null
         }
         Insert: {
+          color?: string | null
           created_at?: string
           id?: number
           image_url?: string | null
-          Licence_Plate?: string | null
+          licence_plate?: string | null
           model?: string | null
-          Name?: string | null
+          name?: string | null
           owner?: string | null
-          VIN?: string | null
           year?: string | null
         }
         Update: {
+          color?: string | null
           created_at?: string
           id?: number
           image_url?: string | null
-          Licence_Plate?: string | null
+          licence_plate?: string | null
           model?: string | null
-          Name?: string | null
+          name?: string | null
           owner?: string | null
-          VIN?: string | null
           year?: string | null
         }
         Relationships: [

@@ -2,6 +2,7 @@ import Colors from '@/constants/Colors';
 import { defaultStyles } from '@/constants/Styles';
 import { isClerkAPIResponseError, useSignIn, useSignUp } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
+import { supabase } from '@/lib/supabase'
 import { useOAuth } from '@clerk/clerk-expo';
 import { Link, Stack, useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -16,7 +17,7 @@ import {
   Alert,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { supabase } from '@/lib/supabase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 enum Strategy {
     Google = 'oauth_google',
@@ -26,83 +27,43 @@ enum Strategy {
   const Page = () => {
   const signup = useSignUp
   const { isLoaded, signUp, setActive } = useSignUp();
-
   const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setconfirmPassword] = useState('');
-  const [pendingVerification, setPendingVerification] = useState(false);
-  const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const onSignUpPress = async () => {
-    if (!isLoaded) {
-      return;
-    }
-    setLoading(true);
-
-    try {
-      // Create the user on Clerk
-      await signUp.create({
-        emailAddress,
-        password,
-      });
-
-
-      if(password !== confirmPassword) {
-        alert('Passwords do not match');
-        return;
-      }        
-
-      // Send verification Email
-      await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
-
-      // change the UI to verify the email address
-      setPendingVerification(true);
-    } catch (err: any) {
-      alert(err.errors[0].message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Verify the email address
-  const onPressVerify = async () => {
-    if (!isLoaded) {
-      return;
-    }
-    setLoading(true);
-
-    try {
-      const completeSignUp = await signUp.attemptEmailAddressVerification({
-        code,
-      });
-
-      await setActive({ session: completeSignUp.createdSessionId});
-
-      if(signUp){
-
-        const { data, error } = await supabase
-        .from('users')
-        .insert([
-          { name: signUp?.username, 
-            email: signUp?.emailAddress},
-        ])
-        .select()
-        
+  
+  async function signUpWithEmail() {
     
-        if(data)
-          {
-            console.log(data);
-          }  
-      }
+    if(password !== confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }  else {
+      
+      setLoading(true)
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.signUp({
+        email: emailAddress,
+        password: password,
+      })
 
-    } catch (err: any) {
-      alert(err.errors[0].message);
-    } finally {
-      setLoading(false);
+     if(session) {
+      const userId = await AsyncStorage.setItem('userId', session.user?.id);
+      console.log(userId);
+      await supabase
+      .from("users")
+      .insert({id: session.user?.id, email:emailAddress, password:password});
     }
-  };
-    
+    setLoading(false)
+    router.push('/(onboarding)/Username');
+     }
+
+      
+         
+}
+   
     const router = useRouter();
     const { startOAuthFlow: googleAuth } = useOAuth({ strategy: 'oauth_google' });
     const { startOAuthFlow: appleAuth } = useOAuth({ strategy: 'oauth_apple' });
@@ -135,7 +96,9 @@ enum Strategy {
           if(data)
             {
               console.log(data);
-            }  
+            } 
+            
+            
         }
         }
       } catch (err) {
@@ -146,7 +109,6 @@ enum Strategy {
     return (
       <View style={styles.container}>
 
-    <Stack.Screen options={{ headerBackVisible: !pendingVerification }} />
     <Spinner visible={loading} />
 
         
@@ -156,8 +118,7 @@ enum Strategy {
       Enter your e-mail. We will send you a confirmation code there
       </Text>
       </View>
-      {!pendingVerification && (
-        <>
+    
         <TextInput
           autoCapitalize="none"
           placeholder="Email"
@@ -182,21 +143,13 @@ enum Strategy {
           style={[defaultStyles.inputField, { marginBottom: 20 }]}
         />
   
-        <TouchableOpacity style={defaultStyles.btn} onPress={onSignUpPress}>
+        <TouchableOpacity style={defaultStyles.btn} onPress={() => signUpWithEmail()}>
           <Text style={defaultStyles.btnText}>Sign Up</Text>
         </TouchableOpacity>
-        </>
-      )}
+      
+    
 
-{pendingVerification && (
-        <>
-          <View>
-            <TextInput value={code} placeholder="Code..." style={defaultStyles.btn} onChangeText={setCode} />
-          </View>
-          <TouchableOpacity onPress={onPressVerify}>
-          <Text style={{color:'black'}}>Verify Email</Text></TouchableOpacity>
-        </>
-      )}
+
           <View style={styles.seperatorView}>
           <View
             style={{

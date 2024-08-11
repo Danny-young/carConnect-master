@@ -1,9 +1,12 @@
 import Colors  from '@/constants/Colors';
 import { defaultStyles } from '@/constants/Styles';
+import { supabase } from '@/lib/supabase';
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
+import { Session } from '@supabase/supabase-js';
 import { useAssets } from 'expo-asset';
 import { ResizeMode, Video } from 'expo-av';
 import { Link } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { opacity } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
 
@@ -11,6 +14,18 @@ const Page = () => {
   const [assets] = useAssets([require('@/assets/videos/intro.mp4')]);
 
   const { user } = useUser();
+
+  const [sessionStorage, setSession] = useState<Session | null>(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+  }, [])
   return (
     <View style={styles.container}>
         
@@ -30,9 +45,9 @@ const Page = () => {
         <Text style={styles.header}>hub</Text>
        {/*  <Text style={styles.header}>Ready to make driving easier?</Text> */}
       </View>
-      <SignedIn>
+      {/* <SignedIn>
         <Text>Hello {user?.emailAddresses[0].emailAddress}</Text>
-      </SignedIn>
+      </SignedIn> */}
       <SignedOut>
       <View style={styles.buttons}>
         <Link
