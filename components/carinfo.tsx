@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useUser } from "@clerk/clerk-expo";
 import { defaultStyles } from '@/constants/Styles';
-import Header from '@/components/Header';
+import Header from '@/components/servicepage/Header';
 import { useQuery } from '@tanstack/react-query'
 import * as Location from 'expo-location';
 import Entypo from '@expo/vector-icons/Entypo';

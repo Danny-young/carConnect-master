@@ -33,21 +33,7 @@ import AuthProvider from '@/providers/AuthProvider'
     const { isLoaded, isSignedIn } = useAuth();
     const segments = useSegments();
     const router = useRouter();
-  
-    useEffect(() => {
-      if (!isLoaded) return;
-  
-      const inTabsGroup = segments[0] === '(auth)';
-  
-      console.log('User changed: ', isSignedIn);
-  
-      if (isSignedIn && !inTabsGroup) {
-        router.replace('/(ServiceProvider)/');
-      } else if (!isSignedIn) {
-        router.replace('/');
-      }
-    }, [isSignedIn]);
-  
+    
     return <Slot />;
   };
   

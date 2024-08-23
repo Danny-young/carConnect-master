@@ -94,9 +94,9 @@ const Page = () => {
         <Ionicons name="notifications-outline" size={26} />
       </View>
     <TouchableOpacity >
-      
       <Button title="Add User" onPress={addUser} />
     </TouchableOpacity>
+    
       {user && (
         <View style={styles.card}>
           <TouchableOpacity onPress={onCaptureImage}>

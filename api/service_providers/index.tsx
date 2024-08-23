@@ -1,5 +1,44 @@
 import { supabase } from "@/lib/supabase"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
+
+
+
+export const useServices = () => {return useQuery({
+    queryKey: ['service'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('Services').select('*');
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data;
+    },
+  });
+}
+export const useCategories = () => {return useQuery({
+    queryKey: ['service_categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('service_categories').select('*');
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data;
+    },
+  });
+}
+  
+  
+export const useService = (id: number) => {
+    return useQuery({
+        queryKey: ['service', id],
+        queryFn: async () => {
+          const { data, error } = await supabase.from('Services').select('*').eq('id', id).single();
+          if (error) {
+            throw new Error(error.message);
+          }
+          return data;
+        },
+      });
+}
 
 export const useInsertCompany = () => {
 return useMutation({

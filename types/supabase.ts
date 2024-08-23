@@ -64,18 +64,21 @@ export type Database = {
         Row: {
           created_at: string
           id: number
+          image_url: string | null
           Name: string | null
           service_types: Database["public"]["Enums"]["service_types"] | null
         }
         Insert: {
           created_at?: string
           id?: number
+          image_url?: string | null
           Name?: string | null
           service_types?: Database["public"]["Enums"]["service_types"] | null
         }
         Update: {
           created_at?: string
           id?: number
+          image_url?: string | null
           Name?: string | null
           service_types?: Database["public"]["Enums"]["service_types"] | null
         }
@@ -171,6 +174,24 @@ export type Database = {
             referencedColumns: ["Provider_ID"]
           },
         ]
+      }
+      sliders: {
+        Row: {
+          created_at: string
+          id: number
+          slides_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          slides_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          slides_url?: string | null
+        }
+        Relationships: []
       }
       sub_categories: {
         Row: {
